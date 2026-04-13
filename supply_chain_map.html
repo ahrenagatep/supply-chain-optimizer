@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_26577282634edbbfbeeede03f21f7f20 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="
+        position: fixed; bottom: 35px; left: 35px; z-index: 9999;
+        background: white; padding: 14px 18px;
+        border: 2px solid #888; border-radius: 8px;
+        font-family: Arial, sans-serif; font-size: 13px; line-height: 1.7;
+        box-shadow: 3px 3px 8px rgba(0,0,0,0.2);">
+      <b>Supply Chain Map</b><br>
+      <span style="color:blue;  font-size:18px;">&#9733;</span> Distribution Center<br>
+      <span style="color:green; font-size:16px;">&#9679;</span> Store -- Adequate Stock<br>
+      <span style="color:red;   font-size:16px;">&#9679;</span> Store -- Shortage<br>
+      <span style="color:orange;">&#9135;&#9135;&#9135;</span> Active Restock Route (Dijkstra)
+    </div>
+    
+    
+            <div class="folium-map" id="map_26577282634edbbfbeeede03f21f7f20" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_26577282634edbbfbeeede03f21f7f20 = L.map(
+                "map_26577282634edbbfbeeede03f21f7f20",
+                {
+                    center: [39.5, -98.35],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 4,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_347199aecd959d6435da688a35ad1850 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_347199aecd959d6435da688a35ad1850.addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var marker_2b26f8ccaa3e8392dda1ba399ecd67b2 = L.marker(
+                [34.0522, -118.2437],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_f13079b077acdb5a12440f8593efd7ba = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5a893053b10c6f42206e4a523fc3dccd = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_4fb1131830fd30b9d09ef977e5cd38a5 = $(`<div id="html_4fb1131830fd30b9d09ef977e5cd38a5" style="width: 100.0%; height: 100.0%;"><b>Los Angeles DC</b><br>City : Los Angeles, CA<br>Stock: 6,250 units</div>`)[0];
+                popup_5a893053b10c6f42206e4a523fc3dccd.setContent(html_4fb1131830fd30b9d09ef977e5cd38a5);
+            
+        
+
+        marker_2b26f8ccaa3e8392dda1ba399ecd67b2.bindPopup(popup_5a893053b10c6f42206e4a523fc3dccd)
+        ;
+
+        
+    
+    
+            marker_2b26f8ccaa3e8392dda1ba399ecd67b2.bindTooltip(
+                `<div>
+                     DC: Los Angeles
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_2b26f8ccaa3e8392dda1ba399ecd67b2.setIcon(icon_f13079b077acdb5a12440f8593efd7ba);
+            
+    
+            var marker_045bb447c9f38874eb12869530fa1fd4 = L.marker(
+                [32.7767, -96.797],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_6b315e7f2877cbee0709b1ca9d158248 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5bd569d1a8415cc6368ccbb11da1b408 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_45d5af8397e376cba0486f395f8102a5 = $(`<div id="html_45d5af8397e376cba0486f395f8102a5" style="width: 100.0%; height: 100.0%;"><b>Dallas DC</b><br>City : Dallas, TX<br>Stock: 8,800 units</div>`)[0];
+                popup_5bd569d1a8415cc6368ccbb11da1b408.setContent(html_45d5af8397e376cba0486f395f8102a5);
+            
+        
+
+        marker_045bb447c9f38874eb12869530fa1fd4.bindPopup(popup_5bd569d1a8415cc6368ccbb11da1b408)
+        ;
+
+        
+    
+    
+            marker_045bb447c9f38874eb12869530fa1fd4.bindTooltip(
+                `<div>
+                     DC: Dallas
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_045bb447c9f38874eb12869530fa1fd4.setIcon(icon_6b315e7f2877cbee0709b1ca9d158248);
+            
+    
+            var marker_a5e0f122cfae5dc103a9a85841733401 = L.marker(
+                [41.8781, -87.6298],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_48ab3ae2f456bbbd7211788edb848ff1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c97257e11acb6a54060ecc93a722e24d = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_7999786b5951846eec7f6f97137d4171 = $(`<div id="html_7999786b5951846eec7f6f97137d4171" style="width: 100.0%; height: 100.0%;"><b>Chicago DC</b><br>City : Chicago, IL<br>Stock: -3,050 units</div>`)[0];
+                popup_c97257e11acb6a54060ecc93a722e24d.setContent(html_7999786b5951846eec7f6f97137d4171);
+            
+        
+
+        marker_a5e0f122cfae5dc103a9a85841733401.bindPopup(popup_c97257e11acb6a54060ecc93a722e24d)
+        ;
+
+        
+    
+    
+            marker_a5e0f122cfae5dc103a9a85841733401.bindTooltip(
+                `<div>
+                     DC: Chicago
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a5e0f122cfae5dc103a9a85841733401.setIcon(icon_48ab3ae2f456bbbd7211788edb848ff1);
+            
+    
+            var marker_f5fb1e0f6582a3237bf1a0b6b76c3c93 = L.marker(
+                [33.749, -84.388],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_ed2d41e28221e1906c8ed458588b33b9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d23b70acb3cd8283d0cccc528b16837f = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_dc50bb7621ad5ebd8f23a6d323509564 = $(`<div id="html_dc50bb7621ad5ebd8f23a6d323509564" style="width: 100.0%; height: 100.0%;"><b>Atlanta DC</b><br>City : Atlanta, GA<br>Stock: 4,000 units</div>`)[0];
+                popup_d23b70acb3cd8283d0cccc528b16837f.setContent(html_dc50bb7621ad5ebd8f23a6d323509564);
+            
+        
+
+        marker_f5fb1e0f6582a3237bf1a0b6b76c3c93.bindPopup(popup_d23b70acb3cd8283d0cccc528b16837f)
+        ;
+
+        
+    
+    
+            marker_f5fb1e0f6582a3237bf1a0b6b76c3c93.bindTooltip(
+                `<div>
+                     DC: Atlanta
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f5fb1e0f6582a3237bf1a0b6b76c3c93.setIcon(icon_ed2d41e28221e1906c8ed458588b33b9);
+            
+    
+            var marker_4f4a3a933b2dab43f3fe41270b6e3c2b = L.marker(
+                [33.4484, -112.074],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_cc89539350ef314f82a3769f26a762df = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1eaea36cdd4aecc6200387b4de2f4f42 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_b2b91351c007e879e5f287f9f8636415 = $(`<div id="html_b2b91351c007e879e5f287f9f8636415" style="width: 100.0%; height: 100.0%;"><b>Phoenix DC</b><br>City : Phoenix, AZ<br>Stock: 7,300 units</div>`)[0];
+                popup_1eaea36cdd4aecc6200387b4de2f4f42.setContent(html_b2b91351c007e879e5f287f9f8636415);
+            
+        
+
+        marker_4f4a3a933b2dab43f3fe41270b6e3c2b.bindPopup(popup_1eaea36cdd4aecc6200387b4de2f4f42)
+        ;
+
+        
+    
+    
+            marker_4f4a3a933b2dab43f3fe41270b6e3c2b.bindTooltip(
+                `<div>
+                     DC: Phoenix
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_4f4a3a933b2dab43f3fe41270b6e3c2b.setIcon(icon_cc89539350ef314f82a3769f26a762df);
+            
+    
+            var marker_c0ad0deb63be909e3517c6531fc42f4c = L.marker(
+                [40.7128, -74.006],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_5a669b004ce4c6f6ad431107ea1f5eb2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_56f72edefbc5bd5cde99314bc4e28e5b = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_b2f3011aacd6ed42f508a67c7763217e = $(`<div id="html_b2f3011aacd6ed42f508a67c7763217e" style="width: 100.0%; height: 100.0%;"><b>New York DC</b><br>City : New York, NY<br>Stock: 5,200 units</div>`)[0];
+                popup_56f72edefbc5bd5cde99314bc4e28e5b.setContent(html_b2f3011aacd6ed42f508a67c7763217e);
+            
+        
+
+        marker_c0ad0deb63be909e3517c6531fc42f4c.bindPopup(popup_56f72edefbc5bd5cde99314bc4e28e5b)
+        ;
+
+        
+    
+    
+            marker_c0ad0deb63be909e3517c6531fc42f4c.bindTooltip(
+                `<div>
+                     DC: New York
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c0ad0deb63be909e3517c6531fc42f4c.setIcon(icon_5a669b004ce4c6f6ad431107ea1f5eb2);
+            
+    
+            var marker_9914c06ac96cb6005036c68b0ef5b574 = L.marker(
+                [47.6062, -122.3321],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_78bf24d5233197aff9420115953577f5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2ddb78bed92c8601de82ab389f931fbc = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_5ca66582eb88c5cf742d45d7a80f4efb = $(`<div id="html_5ca66582eb88c5cf742d45d7a80f4efb" style="width: 100.0%; height: 100.0%;"><b>Seattle DC</b><br>City : Seattle, WA<br>Stock: 7,300 units</div>`)[0];
+                popup_2ddb78bed92c8601de82ab389f931fbc.setContent(html_5ca66582eb88c5cf742d45d7a80f4efb);
+            
+        
+
+        marker_9914c06ac96cb6005036c68b0ef5b574.bindPopup(popup_2ddb78bed92c8601de82ab389f931fbc)
+        ;
+
+        
+    
+    
+            marker_9914c06ac96cb6005036c68b0ef5b574.bindTooltip(
+                `<div>
+                     DC: Seattle
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9914c06ac96cb6005036c68b0ef5b574.setIcon(icon_78bf24d5233197aff9420115953577f5);
+            
+    
+            var marker_54edd51cd2812379d5059a357abe32bb = L.marker(
+                [29.7604, -95.3698],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_5ea752f6480433037c518711b5622e3a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_30ab0a33565282720fbae6f697f7383b = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_5987ae65a1508c6cff5d60dcfccf9714 = $(`<div id="html_5987ae65a1508c6cff5d60dcfccf9714" style="width: 100.0%; height: 100.0%;"><b>Houston DC</b><br>City : Houston, TX<br>Stock: 8,800 units</div>`)[0];
+                popup_30ab0a33565282720fbae6f697f7383b.setContent(html_5987ae65a1508c6cff5d60dcfccf9714);
+            
+        
+
+        marker_54edd51cd2812379d5059a357abe32bb.bindPopup(popup_30ab0a33565282720fbae6f697f7383b)
+        ;
+
+        
+    
+    
+            marker_54edd51cd2812379d5059a357abe32bb.bindTooltip(
+                `<div>
+                     DC: Houston
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_54edd51cd2812379d5059a357abe32bb.setIcon(icon_5ea752f6480433037c518711b5622e3a);
+            
+    
+            var marker_1a44d07fad0eb1b845d07662dc370409 = L.marker(
+                [39.7392, -104.9903],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_6569e0ee405482789afcddb8eda55fd4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c977a6475ace1a06d4b477d265e01081 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_01a9f1a129f63282d0d7c80b5063db2a = $(`<div id="html_01a9f1a129f63282d0d7c80b5063db2a" style="width: 100.0%; height: 100.0%;"><b>Denver DC</b><br>City : Denver, CO<br>Stock: 8,800 units</div>`)[0];
+                popup_c977a6475ace1a06d4b477d265e01081.setContent(html_01a9f1a129f63282d0d7c80b5063db2a);
+            
+        
+
+        marker_1a44d07fad0eb1b845d07662dc370409.bindPopup(popup_c977a6475ace1a06d4b477d265e01081)
+        ;
+
+        
+    
+    
+            marker_1a44d07fad0eb1b845d07662dc370409.bindTooltip(
+                `<div>
+                     DC: Denver
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1a44d07fad0eb1b845d07662dc370409.setIcon(icon_6569e0ee405482789afcddb8eda55fd4);
+            
+    
+            var marker_c1a43b780de5a83293994f027666ad19 = L.marker(
+                [25.7617, -80.1918],
+                {
+}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            var icon_943d796a4a4fe13e0e34d45644fbf4e0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e27f4f5c857d2190940c74bf03f1ab06 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_44064a9b00cf140bcb276cf5a710c643 = $(`<div id="html_44064a9b00cf140bcb276cf5a710c643" style="width: 100.0%; height: 100.0%;"><b>Miami DC</b><br>City : Miami, FL<br>Stock: 10,000 units</div>`)[0];
+                popup_e27f4f5c857d2190940c74bf03f1ab06.setContent(html_44064a9b00cf140bcb276cf5a710c643);
+            
+        
+
+        marker_c1a43b780de5a83293994f027666ad19.bindPopup(popup_e27f4f5c857d2190940c74bf03f1ab06)
+        ;
+
+        
+    
+    
+            marker_c1a43b780de5a83293994f027666ad19.bindTooltip(
+                `<div>
+                     DC: Miami
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c1a43b780de5a83293994f027666ad19.setIcon(icon_943d796a4a4fe13e0e34d45644fbf4e0);
+            
+    
+            var circle_marker_562242540b8741cde5dc5deb72d4a336 = L.circleMarker(
+                [45.5051, -122.675],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_5470d1ddd8a7096547494801237b518f = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_8a78d22ce6760a2d47cf470e333de6a9 = $(`<div id="html_8a78d22ce6760a2d47cf470e333de6a9" style="width: 100.0%; height: 100.0%;"><b>Portland Store</b><br>City : Portland, OR<br>Inv  : 145 units<br>Status: <b style='color:green'>OK (145 units)</b></div>`)[0];
+                popup_5470d1ddd8a7096547494801237b518f.setContent(html_8a78d22ce6760a2d47cf470e333de6a9);
+            
+        
+
+        circle_marker_562242540b8741cde5dc5deb72d4a336.bindPopup(popup_5470d1ddd8a7096547494801237b518f)
+        ;
+
+        
+    
+    
+            circle_marker_562242540b8741cde5dc5deb72d4a336.bindTooltip(
+                `<div>
+                     Portland: 145 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ecbe3062371e88044ad4ace16d8e5a9a = L.circleMarker(
+                [37.7749, -122.4194],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_257fcfdb76a2456315703e0d74cf074a = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_1d980eaf34644f07e5a2aeafc040c69f = $(`<div id="html_1d980eaf34644f07e5a2aeafc040c69f" style="width: 100.0%; height: 100.0%;"><b>San Francisco Store</b><br>City : San Francisco, CA<br>Inv  : 199 units<br>Status: <b style='color:green'>OK (199 units)</b></div>`)[0];
+                popup_257fcfdb76a2456315703e0d74cf074a.setContent(html_1d980eaf34644f07e5a2aeafc040c69f);
+            
+        
+
+        circle_marker_ecbe3062371e88044ad4ace16d8e5a9a.bindPopup(popup_257fcfdb76a2456315703e0d74cf074a)
+        ;
+
+        
+    
+    
+            circle_marker_ecbe3062371e88044ad4ace16d8e5a9a.bindTooltip(
+                `<div>
+                     San Francisco: 199 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1dd4c530e0b2da99be3c083ac461f1f0 = L.circleMarker(
+                [32.7157, -117.1611],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_25d9dd9cda8554b5fe3972ceb84a8ab2 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_4022dc5339cc66964ba726a98261d0f2 = $(`<div id="html_4022dc5339cc66964ba726a98261d0f2" style="width: 100.0%; height: 100.0%;"><b>San Diego Store</b><br>City : San Diego, CA<br>Inv  : 164 units<br>Status: <b style='color:green'>OK (164 units)</b></div>`)[0];
+                popup_25d9dd9cda8554b5fe3972ceb84a8ab2.setContent(html_4022dc5339cc66964ba726a98261d0f2);
+            
+        
+
+        circle_marker_1dd4c530e0b2da99be3c083ac461f1f0.bindPopup(popup_25d9dd9cda8554b5fe3972ceb84a8ab2)
+        ;
+
+        
+    
+    
+            circle_marker_1dd4c530e0b2da99be3c083ac461f1f0.bindTooltip(
+                `<div>
+                     San Diego: 164 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_bd56f8e396f5d7e1cf9c0513001ad6e2 = L.circleMarker(
+                [36.1699, -115.1398],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_564968ecb7700a5beee779c2baa8dfef = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_d98e9285968e9447cd5437de916057ea = $(`<div id="html_d98e9285968e9447cd5437de916057ea" style="width: 100.0%; height: 100.0%;"><b>Las Vegas Store</b><br>City : Las Vegas, NV<br>Inv  : 112 units<br>Status: <b style='color:green'>OK (112 units)</b></div>`)[0];
+                popup_564968ecb7700a5beee779c2baa8dfef.setContent(html_d98e9285968e9447cd5437de916057ea);
+            
+        
+
+        circle_marker_bd56f8e396f5d7e1cf9c0513001ad6e2.bindPopup(popup_564968ecb7700a5beee779c2baa8dfef)
+        ;
+
+        
+    
+    
+            circle_marker_bd56f8e396f5d7e1cf9c0513001ad6e2.bindTooltip(
+                `<div>
+                     Las Vegas: 112 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8388d2d2785583b52ca2b93725ed3309 = L.circleMarker(
+                [40.7608, -111.891],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_7d47afb6b4fbb55851815c0a1e645607 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_59ee71c1079db370250483fe3e064b81 = $(`<div id="html_59ee71c1079db370250483fe3e064b81" style="width: 100.0%; height: 100.0%;"><b>Salt Lake City Store</b><br>City : Salt Lake City, UT<br>Inv  : 83 units<br>Status: <b style='color:green'>OK (83 units)</b></div>`)[0];
+                popup_7d47afb6b4fbb55851815c0a1e645607.setContent(html_59ee71c1079db370250483fe3e064b81);
+            
+        
+
+        circle_marker_8388d2d2785583b52ca2b93725ed3309.bindPopup(popup_7d47afb6b4fbb55851815c0a1e645607)
+        ;
+
+        
+    
+    
+            circle_marker_8388d2d2785583b52ca2b93725ed3309.bindTooltip(
+                `<div>
+                     Salt Lake City: 83 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e5e3e032a1f0fd214a9e7d4a63bde150 = L.circleMarker(
+                [35.0844, -106.6504],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_5fe0b1633a978be1c6148fab393710ba = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_a2cd6614b631e3574e950e385e2a4c6a = $(`<div id="html_a2cd6614b631e3574e950e385e2a4c6a" style="width: 100.0%; height: 100.0%;"><b>Albuquerque Store</b><br>City : Albuquerque, NM<br>Inv  : 70 units<br>Status: <b style='color:green'>OK (70 units)</b></div>`)[0];
+                popup_5fe0b1633a978be1c6148fab393710ba.setContent(html_a2cd6614b631e3574e950e385e2a4c6a);
+            
+        
+
+        circle_marker_e5e3e032a1f0fd214a9e7d4a63bde150.bindPopup(popup_5fe0b1633a978be1c6148fab393710ba)
+        ;
+
+        
+    
+    
+            circle_marker_e5e3e032a1f0fd214a9e7d4a63bde150.bindTooltip(
+                `<div>
+                     Albuquerque: 70 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1e74a4f9242a1617a50029c2bcf1a330 = L.circleMarker(
+                [43.615, -116.2023],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_a81926eedb4fc6bb6815f4789d3ec254 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_cc16c62cc226d4b6bd1d2f6a75c294c8 = $(`<div id="html_cc16c62cc226d4b6bd1d2f6a75c294c8" style="width: 100.0%; height: 100.0%;"><b>Boise Store</b><br>City : Boise, ID<br>Inv  : 102 units<br>Status: <b style='color:green'>OK (102 units)</b></div>`)[0];
+                popup_a81926eedb4fc6bb6815f4789d3ec254.setContent(html_cc16c62cc226d4b6bd1d2f6a75c294c8);
+            
+        
+
+        circle_marker_1e74a4f9242a1617a50029c2bcf1a330.bindPopup(popup_a81926eedb4fc6bb6815f4789d3ec254)
+        ;
+
+        
+    
+    
+            circle_marker_1e74a4f9242a1617a50029c2bcf1a330.bindTooltip(
+                `<div>
+                     Boise: 102 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fcfd3fec76de083d67f20dad1586788a = L.circleMarker(
+                [39.0997, -94.5786],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_fe7ca430b1d63e3018dd1265537ef0c2 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_2c654843e489522ddd81560aa3029cef = $(`<div id="html_2c654843e489522ddd81560aa3029cef" style="width: 100.0%; height: 100.0%;"><b>Kansas City Store</b><br>City : Kansas City, MO<br>Inv  : 111 units<br>Status: <b style='color:green'>OK (111 units)</b></div>`)[0];
+                popup_fe7ca430b1d63e3018dd1265537ef0c2.setContent(html_2c654843e489522ddd81560aa3029cef);
+            
+        
+
+        circle_marker_fcfd3fec76de083d67f20dad1586788a.bindPopup(popup_fe7ca430b1d63e3018dd1265537ef0c2)
+        ;
+
+        
+    
+    
+            circle_marker_fcfd3fec76de083d67f20dad1586788a.bindTooltip(
+                `<div>
+                     Kansas City: 111 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ca9f7778329332abd536760605afb219 = L.circleMarker(
+                [44.9778, -93.265],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_fa642c190104e453f94b1948a4b2e50c = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_2714ae0bd517cba37840b9da9cc343da = $(`<div id="html_2714ae0bd517cba37840b9da9cc343da" style="width: 100.0%; height: 100.0%;"><b>Minneapolis Store</b><br>City : Minneapolis, MN<br>Inv  : 174 units<br>Status: <b style='color:green'>OK (174 units)</b></div>`)[0];
+                popup_fa642c190104e453f94b1948a4b2e50c.setContent(html_2714ae0bd517cba37840b9da9cc343da);
+            
+        
+
+        circle_marker_ca9f7778329332abd536760605afb219.bindPopup(popup_fa642c190104e453f94b1948a4b2e50c)
+        ;
+
+        
+    
+    
+            circle_marker_ca9f7778329332abd536760605afb219.bindTooltip(
+                `<div>
+                     Minneapolis: 174 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a6e4c9103aa1ad6fe8807bfe455281b2 = L.circleMarker(
+                [43.0389, -87.9065],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_f71ee834961b0a5e702c357f969b3fd5 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_86fe5e4ccff07af88fc458bf8a69184b = $(`<div id="html_86fe5e4ccff07af88fc458bf8a69184b" style="width: 100.0%; height: 100.0%;"><b>Milwaukee Store</b><br>City : Milwaukee, WI<br>Inv  : 104 units<br>Status: <b style='color:green'>OK (104 units)</b></div>`)[0];
+                popup_f71ee834961b0a5e702c357f969b3fd5.setContent(html_86fe5e4ccff07af88fc458bf8a69184b);
+            
+        
+
+        circle_marker_a6e4c9103aa1ad6fe8807bfe455281b2.bindPopup(popup_f71ee834961b0a5e702c357f969b3fd5)
+        ;
+
+        
+    
+    
+            circle_marker_a6e4c9103aa1ad6fe8807bfe455281b2.bindTooltip(
+                `<div>
+                     Milwaukee: 104 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a39021283f2a3752baf4a0c7823bca03 = L.circleMarker(
+                [41.2565, -95.9345],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_3286db6cb30640bb71d2afd8108748b9 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_49c3ed833bbc978a4814150c5c0a43b7 = $(`<div id="html_49c3ed833bbc978a4814150c5c0a43b7" style="width: 100.0%; height: 100.0%;"><b>Omaha Store</b><br>City : Omaha, NE<br>Inv  : 103 units<br>Status: <b style='color:green'>OK (103 units)</b></div>`)[0];
+                popup_3286db6cb30640bb71d2afd8108748b9.setContent(html_49c3ed833bbc978a4814150c5c0a43b7);
+            
+        
+
+        circle_marker_a39021283f2a3752baf4a0c7823bca03.bindPopup(popup_3286db6cb30640bb71d2afd8108748b9)
+        ;
+
+        
+    
+    
+            circle_marker_a39021283f2a3752baf4a0c7823bca03.bindTooltip(
+                `<div>
+                     Omaha: 103 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5c28afa5f18db333832b7a5ed934d722 = L.circleMarker(
+                [38.627, -90.1994],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_adb35a2f9c533fcc7e058eab01fda986 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_5a03f3ac7b66091c412ac49ce8ec3e84 = $(`<div id="html_5a03f3ac7b66091c412ac49ce8ec3e84" style="width: 100.0%; height: 100.0%;"><b>St. Louis Store</b><br>City : St. Louis, MO<br>Inv  : 84 units<br>Status: <b style='color:green'>OK (84 units)</b></div>`)[0];
+                popup_adb35a2f9c533fcc7e058eab01fda986.setContent(html_5a03f3ac7b66091c412ac49ce8ec3e84);
+            
+        
+
+        circle_marker_5c28afa5f18db333832b7a5ed934d722.bindPopup(popup_adb35a2f9c533fcc7e058eab01fda986)
+        ;
+
+        
+    
+    
+            circle_marker_5c28afa5f18db333832b7a5ed934d722.bindTooltip(
+                `<div>
+                     St. Louis: 84 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5b5570fe304def44ad5fff368f86b794 = L.circleMarker(
+                [42.3314, -83.0458],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_8bea5d8d3329acaa29c5a54c81edd0ef = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_ec7914c65c9dcce8e8ff2c13339534a5 = $(`<div id="html_ec7914c65c9dcce8e8ff2c13339534a5" style="width: 100.0%; height: 100.0%;"><b>Detroit Store</b><br>City : Detroit, MI<br>Inv  : 91 units<br>Status: <b style='color:green'>OK (91 units)</b></div>`)[0];
+                popup_8bea5d8d3329acaa29c5a54c81edd0ef.setContent(html_ec7914c65c9dcce8e8ff2c13339534a5);
+            
+        
+
+        circle_marker_5b5570fe304def44ad5fff368f86b794.bindPopup(popup_8bea5d8d3329acaa29c5a54c81edd0ef)
+        ;
+
+        
+    
+    
+            circle_marker_5b5570fe304def44ad5fff368f86b794.bindTooltip(
+                `<div>
+                     Detroit: 91 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b09cf156e493493abed401c008bf5683 = L.circleMarker(
+                [39.9612, -82.9988],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_256f611f54e971ebcd4e355478415c8b = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_81e0b24787c7190d8653c44b1a61f50c = $(`<div id="html_81e0b24787c7190d8653c44b1a61f50c" style="width: 100.0%; height: 100.0%;"><b>Columbus Store</b><br>City : Columbus, OH<br>Inv  : 198 units<br>Status: <b style='color:green'>OK (198 units)</b></div>`)[0];
+                popup_256f611f54e971ebcd4e355478415c8b.setContent(html_81e0b24787c7190d8653c44b1a61f50c);
+            
+        
+
+        circle_marker_b09cf156e493493abed401c008bf5683.bindPopup(popup_256f611f54e971ebcd4e355478415c8b)
+        ;
+
+        
+    
+    
+            circle_marker_b09cf156e493493abed401c008bf5683.bindTooltip(
+                `<div>
+                     Columbus: 198 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_67f3a8086398895fbf7d17f04d8ed28f = L.circleMarker(
+                [39.7684, -86.1581],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_3294c84e628500a224a5d12f2474a060 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_fe9130b89cc214a08cd51e771aea8b2c = $(`<div id="html_fe9130b89cc214a08cd51e771aea8b2c" style="width: 100.0%; height: 100.0%;"><b>Indianapolis Store</b><br>City : Indianapolis, IN<br>Inv  : 99 units<br>Status: <b style='color:green'>OK (99 units)</b></div>`)[0];
+                popup_3294c84e628500a224a5d12f2474a060.setContent(html_fe9130b89cc214a08cd51e771aea8b2c);
+            
+        
+
+        circle_marker_67f3a8086398895fbf7d17f04d8ed28f.bindPopup(popup_3294c84e628500a224a5d12f2474a060)
+        ;
+
+        
+    
+    
+            circle_marker_67f3a8086398895fbf7d17f04d8ed28f.bindTooltip(
+                `<div>
+                     Indianapolis: 99 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_11d1eb65ac1dc55da84271590fb2ee24 = L.circleMarker(
+                [41.4993, -81.6944],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_a166deaf4fa109d45cd8ff4560fb149e = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_66725cfdb7794b3db1c8666578d1b89d = $(`<div id="html_66725cfdb7794b3db1c8666578d1b89d" style="width: 100.0%; height: 100.0%;"><b>Cleveland Store</b><br>City : Cleveland, OH<br>Inv  : 109 units<br>Status: <b style='color:green'>OK (109 units)</b></div>`)[0];
+                popup_a166deaf4fa109d45cd8ff4560fb149e.setContent(html_66725cfdb7794b3db1c8666578d1b89d);
+            
+        
+
+        circle_marker_11d1eb65ac1dc55da84271590fb2ee24.bindPopup(popup_a166deaf4fa109d45cd8ff4560fb149e)
+        ;
+
+        
+    
+    
+            circle_marker_11d1eb65ac1dc55da84271590fb2ee24.bindTooltip(
+                `<div>
+                     Cleveland: 109 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c899f44024159221a96295606b7e91cc = L.circleMarker(
+                [40.4406, -79.9959],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_f92d1079af3a21d724d5a09dd4832e1d = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_66614146d0edb73c6561ca926ccf9b1b = $(`<div id="html_66614146d0edb73c6561ca926ccf9b1b" style="width: 100.0%; height: 100.0%;"><b>Pittsburgh Store</b><br>City : Pittsburgh, PA<br>Inv  : 126 units<br>Status: <b style='color:green'>OK (126 units)</b></div>`)[0];
+                popup_f92d1079af3a21d724d5a09dd4832e1d.setContent(html_66614146d0edb73c6561ca926ccf9b1b);
+            
+        
+
+        circle_marker_c899f44024159221a96295606b7e91cc.bindPopup(popup_f92d1079af3a21d724d5a09dd4832e1d)
+        ;
+
+        
+    
+    
+            circle_marker_c899f44024159221a96295606b7e91cc.bindTooltip(
+                `<div>
+                     Pittsburgh: 126 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b1ce910310529ec4a98fa11102a3b26e = L.circleMarker(
+                [39.1031, -84.512],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_418ef01e4c4cd24fc96f70f02b661ff6 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_d443cede7ab20c2d1e42e362eaab06a4 = $(`<div id="html_d443cede7ab20c2d1e42e362eaab06a4" style="width: 100.0%; height: 100.0%;"><b>Cincinnati Store</b><br>City : Cincinnati, OH<br>Inv  : 99 units<br>Status: <b style='color:green'>OK (99 units)</b></div>`)[0];
+                popup_418ef01e4c4cd24fc96f70f02b661ff6.setContent(html_d443cede7ab20c2d1e42e362eaab06a4);
+            
+        
+
+        circle_marker_b1ce910310529ec4a98fa11102a3b26e.bindPopup(popup_418ef01e4c4cd24fc96f70f02b661ff6)
+        ;
+
+        
+    
+    
+            circle_marker_b1ce910310529ec4a98fa11102a3b26e.bindTooltip(
+                `<div>
+                     Cincinnati: 99 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f7e807cd542ba8fadff2b2c5d074608f = L.circleMarker(
+                [38.2527, -85.7585],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_8c5c0a95865f34cf6319880853fe123c = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_e57fba74576305d50f81aaa44bdd64cd = $(`<div id="html_e57fba74576305d50f81aaa44bdd64cd" style="width: 100.0%; height: 100.0%;"><b>Louisville Store</b><br>City : Louisville, KY<br>Inv  : 103 units<br>Status: <b style='color:green'>OK (103 units)</b></div>`)[0];
+                popup_8c5c0a95865f34cf6319880853fe123c.setContent(html_e57fba74576305d50f81aaa44bdd64cd);
+            
+        
+
+        circle_marker_f7e807cd542ba8fadff2b2c5d074608f.bindPopup(popup_8c5c0a95865f34cf6319880853fe123c)
+        ;
+
+        
+    
+    
+            circle_marker_f7e807cd542ba8fadff2b2c5d074608f.bindTooltip(
+                `<div>
+                     Louisville: 103 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b0d0d653c297074e41d4a9cf8f539650 = L.circleMarker(
+                [36.1627, -86.7816],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_c28ba95df0b643cbf8902249162136db = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_7ced2f279dc0eca73f6bbca9296a80f2 = $(`<div id="html_7ced2f279dc0eca73f6bbca9296a80f2" style="width: 100.0%; height: 100.0%;"><b>Nashville Store</b><br>City : Nashville, TN<br>Inv  : 108 units<br>Status: <b style='color:green'>OK (108 units)</b></div>`)[0];
+                popup_c28ba95df0b643cbf8902249162136db.setContent(html_7ced2f279dc0eca73f6bbca9296a80f2);
+            
+        
+
+        circle_marker_b0d0d653c297074e41d4a9cf8f539650.bindPopup(popup_c28ba95df0b643cbf8902249162136db)
+        ;
+
+        
+    
+    
+            circle_marker_b0d0d653c297074e41d4a9cf8f539650.bindTooltip(
+                `<div>
+                     Nashville: 108 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1c67f3c9f88019e3a8a410ee11bb2af4 = L.circleMarker(
+                [35.1495, -90.049],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_834eb234362de076e991b4a6814f859b = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_15e5e7c82a31d5b9172956ddbee9008e = $(`<div id="html_15e5e7c82a31d5b9172956ddbee9008e" style="width: 100.0%; height: 100.0%;"><b>Memphis Store</b><br>City : Memphis, TN<br>Inv  : 74 units<br>Status: <b style='color:green'>OK (74 units)</b></div>`)[0];
+                popup_834eb234362de076e991b4a6814f859b.setContent(html_15e5e7c82a31d5b9172956ddbee9008e);
+            
+        
+
+        circle_marker_1c67f3c9f88019e3a8a410ee11bb2af4.bindPopup(popup_834eb234362de076e991b4a6814f859b)
+        ;
+
+        
+    
+    
+            circle_marker_1c67f3c9f88019e3a8a410ee11bb2af4.bindTooltip(
+                `<div>
+                     Memphis: 74 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_86671d10007f840ebc80fcbdd658ca39 = L.circleMarker(
+                [29.9511, -90.0715],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_9c8b75a38c1b119f09220804a9567d55 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_f8c388b4e70d7a91af3496d9f62c6bbd = $(`<div id="html_f8c388b4e70d7a91af3496d9f62c6bbd" style="width: 100.0%; height: 100.0%;"><b>New Orleans Store</b><br>City : New Orleans, LA<br>Inv  : 196 units<br>Status: <b style='color:green'>OK (196 units)</b></div>`)[0];
+                popup_9c8b75a38c1b119f09220804a9567d55.setContent(html_f8c388b4e70d7a91af3496d9f62c6bbd);
+            
+        
+
+        circle_marker_86671d10007f840ebc80fcbdd658ca39.bindPopup(popup_9c8b75a38c1b119f09220804a9567d55)
+        ;
+
+        
+    
+    
+            circle_marker_86671d10007f840ebc80fcbdd658ca39.bindTooltip(
+                `<div>
+                     New Orleans: 196 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e522c44cfb134e687467c73b2f2fe59d = L.circleMarker(
+                [33.5207, -86.8025],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_6d449fd92360d797993383da965df689 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_edb89c7fc81ce65040a8522dab2deeab = $(`<div id="html_edb89c7fc81ce65040a8522dab2deeab" style="width: 100.0%; height: 100.0%;"><b>Birmingham Store</b><br>City : Birmingham, AL<br>Inv  : 84 units<br>Status: <b style='color:green'>OK (84 units)</b></div>`)[0];
+                popup_6d449fd92360d797993383da965df689.setContent(html_edb89c7fc81ce65040a8522dab2deeab);
+            
+        
+
+        circle_marker_e522c44cfb134e687467c73b2f2fe59d.bindPopup(popup_6d449fd92360d797993383da965df689)
+        ;
+
+        
+    
+    
+            circle_marker_e522c44cfb134e687467c73b2f2fe59d.bindTooltip(
+                `<div>
+                     Birmingham: 84 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b5854954c391d7ed38a89dd22a63e207 = L.circleMarker(
+                [35.4676, -97.5164],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_fd3e60f1339582f2d0095ea3342e5fee = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_f9e4eb4f56829610a228f5204e6e6058 = $(`<div id="html_f9e4eb4f56829610a228f5204e6e6058" style="width: 100.0%; height: 100.0%;"><b>Oklahoma City Store</b><br>City : Oklahoma City, OK<br>Inv  : 51 units<br>Status: <b style='color:green'>OK (51 units)</b></div>`)[0];
+                popup_fd3e60f1339582f2d0095ea3342e5fee.setContent(html_f9e4eb4f56829610a228f5204e6e6058);
+            
+        
+
+        circle_marker_b5854954c391d7ed38a89dd22a63e207.bindPopup(popup_fd3e60f1339582f2d0095ea3342e5fee)
+        ;
+
+        
+    
+    
+            circle_marker_b5854954c391d7ed38a89dd22a63e207.bindTooltip(
+                `<div>
+                     Oklahoma City: 51 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d1bc1adc87f202205a14da9a65b2a291 = L.circleMarker(
+                [31.7619, -106.485],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_95945165fef391828d989c60752a2609 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_88a1fca113806a65a2887ec76b81d7b3 = $(`<div id="html_88a1fca113806a65a2887ec76b81d7b3" style="width: 100.0%; height: 100.0%;"><b>El Paso Store</b><br>City : El Paso, TX<br>Inv  : 99 units<br>Status: <b style='color:green'>OK (99 units)</b></div>`)[0];
+                popup_95945165fef391828d989c60752a2609.setContent(html_88a1fca113806a65a2887ec76b81d7b3);
+            
+        
+
+        circle_marker_d1bc1adc87f202205a14da9a65b2a291.bindPopup(popup_95945165fef391828d989c60752a2609)
+        ;
+
+        
+    
+    
+            circle_marker_d1bc1adc87f202205a14da9a65b2a291.bindTooltip(
+                `<div>
+                     El Paso: 99 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c1762ae638ebc6c767ebea6668162f49 = L.circleMarker(
+                [35.2271, -80.8431],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_5b2a5b331533c8ee8bc4ac14d8771aa7 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_a71ef13add47bbc1be43eb3219a2979e = $(`<div id="html_a71ef13add47bbc1be43eb3219a2979e" style="width: 100.0%; height: 100.0%;"><b>Charlotte Store</b><br>City : Charlotte, NC<br>Inv  : 64 units<br>Status: <b style='color:green'>OK (64 units)</b></div>`)[0];
+                popup_5b2a5b331533c8ee8bc4ac14d8771aa7.setContent(html_a71ef13add47bbc1be43eb3219a2979e);
+            
+        
+
+        circle_marker_c1762ae638ebc6c767ebea6668162f49.bindPopup(popup_5b2a5b331533c8ee8bc4ac14d8771aa7)
+        ;
+
+        
+    
+    
+            circle_marker_c1762ae638ebc6c767ebea6668162f49.bindTooltip(
+                `<div>
+                     Charlotte: 64 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a57f974ff136b86ae3d414c5226f3c45 = L.circleMarker(
+                [35.7796, -78.6382],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_b22f84fff91ffe6276f03819b6de8415 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_052af03cbb80f93043cfde91e2e2382b = $(`<div id="html_052af03cbb80f93043cfde91e2e2382b" style="width: 100.0%; height: 100.0%;"><b>Raleigh Store</b><br>City : Raleigh, NC<br>Inv  : 87 units<br>Status: <b style='color:green'>OK (87 units)</b></div>`)[0];
+                popup_b22f84fff91ffe6276f03819b6de8415.setContent(html_052af03cbb80f93043cfde91e2e2382b);
+            
+        
+
+        circle_marker_a57f974ff136b86ae3d414c5226f3c45.bindPopup(popup_b22f84fff91ffe6276f03819b6de8415)
+        ;
+
+        
+    
+    
+            circle_marker_a57f974ff136b86ae3d414c5226f3c45.bindTooltip(
+                `<div>
+                     Raleigh: 87 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3df0a1604d9e396e3b3eca5123be19e9 = L.circleMarker(
+                [37.5407, -77.436],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_4893d1c29c49731195a4f0222fe05248 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_891d9bb224e5b80b3fef10b7977efdc6 = $(`<div id="html_891d9bb224e5b80b3fef10b7977efdc6" style="width: 100.0%; height: 100.0%;"><b>Richmond Store</b><br>City : Richmond, VA<br>Inv  : 104 units<br>Status: <b style='color:green'>OK (104 units)</b></div>`)[0];
+                popup_4893d1c29c49731195a4f0222fe05248.setContent(html_891d9bb224e5b80b3fef10b7977efdc6);
+            
+        
+
+        circle_marker_3df0a1604d9e396e3b3eca5123be19e9.bindPopup(popup_4893d1c29c49731195a4f0222fe05248)
+        ;
+
+        
+    
+    
+            circle_marker_3df0a1604d9e396e3b3eca5123be19e9.bindTooltip(
+                `<div>
+                     Richmond: 104 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_278efced6cf9bebb58f1edd5a6267ee0 = L.circleMarker(
+                [39.9526, -75.1652],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_5803ba9b5b10c7c8b42cba1dfd7f4841 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_a60d93ebb3f0ad455352fa58eb7ddbe5 = $(`<div id="html_a60d93ebb3f0ad455352fa58eb7ddbe5" style="width: 100.0%; height: 100.0%;"><b>Philadelphia Store</b><br>City : Philadelphia, PA<br>Inv  : 91 units<br>Status: <b style='color:green'>OK (91 units)</b></div>`)[0];
+                popup_5803ba9b5b10c7c8b42cba1dfd7f4841.setContent(html_a60d93ebb3f0ad455352fa58eb7ddbe5);
+            
+        
+
+        circle_marker_278efced6cf9bebb58f1edd5a6267ee0.bindPopup(popup_5803ba9b5b10c7c8b42cba1dfd7f4841)
+        ;
+
+        
+    
+    
+            circle_marker_278efced6cf9bebb58f1edd5a6267ee0.bindTooltip(
+                `<div>
+                     Philadelphia: 91 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6966645b2cee713fb856464c41a848f1 = L.circleMarker(
+                [42.3601, -71.0589],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9, "stroke": true, "weight": 3}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+        var popup_49ae25aeb23987accb0047d596219a44 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_dd75500d88bc761fb7f70df265557789 = $(`<div id="html_dd75500d88bc761fb7f70df265557789" style="width: 100.0%; height: 100.0%;"><b>Boston Store</b><br>City : Boston, MA<br>Inv  : 64 units<br>Status: <b style='color:green'>OK (64 units)</b></div>`)[0];
+                popup_49ae25aeb23987accb0047d596219a44.setContent(html_dd75500d88bc761fb7f70df265557789);
+            
+        
+
+        circle_marker_6966645b2cee713fb856464c41a848f1.bindPopup(popup_49ae25aeb23987accb0047d596219a44)
+        ;
+
+        
+    
+    
+            circle_marker_6966645b2cee713fb856464c41a848f1.bindTooltip(
+                `<div>
+                     Boston: 64 units
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_44ccd94ea33225612a3e7863ace2b4a8 = L.polyline(
+                [[47.6062, -122.3321], [45.5051, -122.675]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_44ccd94ea33225612a3e7863ace2b4a8.bindTooltip(
+                `<div>
+                     Seattle -> Portland  (190 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_6067e0fd314935af61c1fb962fc8ac09 = L.polyline(
+                [[39.7392, -104.9903], [40.7608, -111.891]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_6067e0fd314935af61c1fb962fc8ac09.bindTooltip(
+                `<div>
+                     Denver -> Salt Lake City  (482 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_c6f5fc83a2fb002176658156126f2a5d = L.polyline(
+                [[33.4484, -112.074], [35.0844, -106.6504]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_c6f5fc83a2fb002176658156126f2a5d.bindTooltip(
+                `<div>
+                     Phoenix -> Albuquerque  (429 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4708003ef0bcb910d59ad1fa59d0a95b = L.polyline(
+                [[47.6062, -122.3321], [43.615, -116.2023]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_4708003ef0bcb910d59ad1fa59d0a95b.bindTooltip(
+                `<div>
+                     Seattle -> Boise  (526 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a5b2ec2d27ba22985139979f83772ea3 = L.polyline(
+                [[41.8781, -87.6298], [43.0389, -87.9065]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_a5b2ec2d27ba22985139979f83772ea3.bindTooltip(
+                `<div>
+                     Chicago -> Milwaukee  (106 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_6ac99745c6309223f348b6167ab7f6b7 = L.polyline(
+                [[41.8781, -87.6298], [42.3314, -83.0458]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_6ac99745c6309223f348b6167ab7f6b7.bindTooltip(
+                `<div>
+                     Chicago -> Detroit  (308 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_de7569b91fe66e06fab35b29b61b42e4 = L.polyline(
+                [[41.8781, -87.6298], [38.2527, -85.7585]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_de7569b91fe66e06fab35b29b61b42e4.bindTooltip(
+                `<div>
+                     Chicago -> Louisville  (350 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_25220318a2a30162a8bece212ae026e2 = L.polyline(
+                [[33.4484, -112.074], [31.7619, -106.485]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_25220318a2a30162a8bece212ae026e2.bindTooltip(
+                `<div>
+                     Phoenix -> El Paso  (449 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8bbac1d096273943634a457af9c48715 = L.polyline(
+                [[33.749, -84.388], [35.7796, -78.6382]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_8bbac1d096273943634a457af9c48715.bindTooltip(
+                `<div>
+                     Atlanta -> Raleigh  (462 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0d0be9b3c4fd71cb0d646d08369f7a0f = L.polyline(
+                [[40.7128, -74.006], [37.5407, -77.436]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_0d0be9b3c4fd71cb0d646d08369f7a0f.bindTooltip(
+                `<div>
+                     New York -> Richmond  (372 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_333e74e0edcea131e3549feb1618d780 = L.polyline(
+                [[34.0522, -118.2437], [32.7157, -117.1611]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_333e74e0edcea131e3549feb1618d780.bindTooltip(
+                `<div>
+                     Los Angeles -> San Diego  (145 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_dc9f55b084d4f93c4c6081ad676ba57c = L.polyline(
+                [[34.0522, -118.2437], [36.1699, -115.1398]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_dc9f55b084d4f93c4c6081ad676ba57c.bindTooltip(
+                `<div>
+                     Los Angeles -> Las Vegas  (297 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_be674e6cfbf65ea5811b818a22cff12a = L.polyline(
+                [[41.8781, -87.6298], [39.9612, -82.9988]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_be674e6cfbf65ea5811b818a22cff12a.bindTooltip(
+                `<div>
+                     Chicago -> Columbus  (358 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0a9ad76c2e0230a4cd877f6a5021e982 = L.polyline(
+                [[41.8781, -87.6298], [39.7684, -86.1581]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_0a9ad76c2e0230a4cd877f6a5021e982.bindTooltip(
+                `<div>
+                     Chicago -> Indianapolis  (214 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b4b051a09c606d4608273ebf4dfcbc12 = L.polyline(
+                [[40.7128, -74.006], [40.4406, -79.9959]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_b4b051a09c606d4608273ebf4dfcbc12.bindTooltip(
+                `<div>
+                     New York -> Pittsburgh  (409 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8626827347fac152e1053cff753a0c81 = L.polyline(
+                [[33.749, -84.388], [35.1495, -90.049]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_8626827347fac152e1053cff753a0c81.bindTooltip(
+                `<div>
+                     Atlanta -> Memphis  (438 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_1fb775d51cf6c7d6c6d654b190b98c9e = L.polyline(
+                [[32.7767, -96.797], [35.4676, -97.5164]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_1fb775d51cf6c7d6c6d654b190b98c9e.bindTooltip(
+                `<div>
+                     Dallas -> Oklahoma City  (248 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_c3aa75d16b577590ecd1c385392448f2 = L.polyline(
+                [[33.749, -84.388], [35.2271, -80.8431]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_c3aa75d16b577590ecd1c385392448f2.bindTooltip(
+                `<div>
+                     Atlanta -> Charlotte  (294 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_fd4369d830907ed690b1d88fa48ab156 = L.polyline(
+                [[34.0522, -118.2437], [37.7749, -122.4194]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_fd4369d830907ed690b1d88fa48ab156.bindTooltip(
+                `<div>
+                     Los Angeles -> San Francisco  (452 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8f1e52e608cacccf30eef349066d9e6d = L.polyline(
+                [[41.8781, -87.6298], [39.0997, -94.5786]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_8f1e52e608cacccf30eef349066d9e6d.bindTooltip(
+                `<div>
+                     Chicago -> Kansas City  (536 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_04e25ef5a141b2b1590af2d37eb69c93 = L.polyline(
+                [[33.749, -84.388], [36.1627, -86.7816]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_04e25ef5a141b2b1590af2d37eb69c93.bindTooltip(
+                `<div>
+                     Atlanta -> Nashville  (279 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_82ea151a6bc4ae2b62c5c59aaff03ea2 = L.polyline(
+                [[41.8781, -87.6298], [41.4993, -81.6944]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_82ea151a6bc4ae2b62c5c59aaff03ea2.bindTooltip(
+                `<div>
+                     Chicago -> Cleveland  (400 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_cc9bc86b04599940bf6b33607d9f3674 = L.polyline(
+                [[33.749, -84.388], [33.5207, -86.8025]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_cc9bc86b04599940bf6b33607d9f3674.bindTooltip(
+                `<div>
+                     Atlanta -> Birmingham  (182 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e805347861532637ce94db914523cffd = L.polyline(
+                [[41.8781, -87.6298], [44.9778, -93.265]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_e805347861532637ce94db914523cffd.bindTooltip(
+                `<div>
+                     Chicago -> Minneapolis  (461 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_259ceddac066483fbafc7fc4ef3d69ac = L.polyline(
+                [[41.8781, -87.6298], [39.1031, -84.512]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_259ceddac066483fbafc7fc4ef3d69ac.bindTooltip(
+                `<div>
+                     Chicago -> Cincinnati  (328 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0a0a76bb92bd759a4573fcc963a7318e = L.polyline(
+                [[40.7128, -74.006], [39.9526, -75.1652]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_0a0a76bb92bd759a4573fcc963a7318e.bindTooltip(
+                `<div>
+                     New York -> Philadelphia  (105 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_287e222c6c3e9ea9f2aafe8b139dec8f = L.polyline(
+                [[40.7128, -74.006], [42.3601, -71.0589]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_287e222c6c3e9ea9f2aafe8b139dec8f.bindTooltip(
+                `<div>
+                     New York -> Boston  (247 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0dc5057e055ac0d302329e81b113af91 = L.polyline(
+                [[41.8781, -87.6298], [41.2565, -95.9345]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_0dc5057e055ac0d302329e81b113af91.bindTooltip(
+                `<div>
+                     Chicago -> Omaha  (561 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_bd0a3c30583dd641b4a36cc5f58ab019 = L.polyline(
+                [[41.8781, -87.6298], [38.627, -90.1994]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_bd0a3c30583dd641b4a36cc5f58ab019.bindTooltip(
+                `<div>
+                     Chicago -> St. Louis  (341 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_57f6afac9ff9e533d94d13855d8cbd4c = L.polyline(
+                [[29.7604, -95.3698], [29.9511, -90.0715]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.75, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_26577282634edbbfbeeede03f21f7f20);
+        
+    
+            poly_line_57f6afac9ff9e533d94d13855d8cbd4c.bindTooltip(
+                `<div>
+                     Houston -> New Orleans  (413 mi)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>
